@@ -1,1 +1,2 @@
 Here's my new gitdemo text
+touch~/.git-credentials
