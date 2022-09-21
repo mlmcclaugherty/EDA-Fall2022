@@ -6,6 +6,9 @@ geometry: margin=2.54cm
 editor_options: 
   chunk_output_type: inline
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts = list(width.cutoff=80),tidy=TRUE)
+```
 
 ## OVERVIEW
 
