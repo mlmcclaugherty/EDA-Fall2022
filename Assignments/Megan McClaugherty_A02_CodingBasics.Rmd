@@ -36,7 +36,7 @@ onehundred_sequence <- seq(1,100,4)
 onehundred_sequence
 
 
-#2. Here I use the mean and median functions with the onehundred_sequence object I created.
+#2. Here I use the mean and median functions with the onehundred_sequence I created.
 mean(onehundred_sequence)
 median(onehundred_sequence)
 
@@ -57,15 +57,15 @@ mean(onehundred_sequence)>median(onehundred_sequence)
 
 ```{r}
 #6
-student_names <- c("Dorothy", "Blanch", "Rose", "Sophia")
+student_names <- c("Dorothy", "Blanch", "Rose", "Sophia") #student_names is a character vector
 student_names
-#student_names is a character vector
-test_scores <- c(98,81,77,80)
+
+test_scores <- c(98,0,77,80) #test_scores is a numeric vector
 test_scores
-#test_scores is a numeric vector
-passed_gradeabovefifty <-c(TRUE, TRUE, TRUE, TRUE)
+
+passed_gradeabovefifty <-c(TRUE, FALSE, TRUE, TRUE) #passed_gradeabovefifty is a logical vector
 passed_gradeabovefifty
-#passed_gradeabovefifty is a logical vector
+
 
 #7
 golden_student_grades <- data.frame(student_names,test_scores,passed_gradeabovefifty)
@@ -85,9 +85,10 @@ golden_student_grades
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r}
-
+passed <-ifelse(test_scores > 50, "TRUE", "FALSE")
+passed
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer: ifelse worked. It worked because the function allows you to create logical condition, then runs the following two codes after evaluating the vector.
