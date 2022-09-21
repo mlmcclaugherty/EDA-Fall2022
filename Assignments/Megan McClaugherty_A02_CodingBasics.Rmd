@@ -1,10 +1,10 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: Megan McClaugherty
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## OVERVIEW
@@ -31,11 +31,17 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r}
-#1. 
+#1. The seq function creates a sequence in the order of from, to, and by. The arrow indicates I named the object onehundred_sequence. The onehundred_sequence code shows that sequence below the code chunk.
+onehundred_sequence <- seq(1,100,4)
+onehundred_sequence
 
-#2. 
 
-#3. 
+#2. Here I use the mean and median functions with the onehundred_sequence object I created.
+mean(onehundred_sequence)
+median(onehundred_sequence)
+
+#3. I used a the greater than symbol to ask whether the mean of the onehundred_sequence dataset is larger than the median. 
+mean(onehundred_sequence)>median(onehundred_sequence)
 
 ```
 
@@ -50,12 +56,29 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 8.  Label the columns of your data frame with informative titles.
 
 ```{r}
+#6
+student_names <- c("Dorothy", "Blanch", "Rose", "Sophia")
+student_names
+#student_names is a character vector
+test_scores <- c(98,81,77,80)
+test_scores
+#test_scores is a numeric vector
+passed_gradeabovefifty <-c(TRUE, TRUE, TRUE, TRUE)
+passed_gradeabovefifty
+#passed_gradeabovefifty is a logical vector
 
+#7
+golden_student_grades <- data.frame(student_names,test_scores,passed_gradeabovefifty)
+golden_student_grades
+
+#8
+colnames(golden_student_grades) <- c("Golden Student", "Test Score", "Passed")
+golden_student_grades
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: This data frame is different from a matrix because it can have columns containing different types of vectors, while matrix columns must have all the same type of vector.
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. 
 
