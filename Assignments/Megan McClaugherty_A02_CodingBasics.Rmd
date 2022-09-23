@@ -94,4 +94,4 @@ passed
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: ifelse worked. It worked because the function allows you to create logical condition, then runs the following two codes after evaluating the vector.
+> Answer: ifelse worked. It worked because the function allows you to create logical condition, then runs the following codes for each element of a vector. If and else only works for vectors with a single element.
