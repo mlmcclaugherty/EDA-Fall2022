@@ -150,6 +150,7 @@ Selecting allows us to choose certain columns (variables) in our dataset.
 
 ```{r}
 NTL.phys.data.temps <- select(NTL.phys.data, lakename, sampledate:temperature_C)
+#you can use the colon : symbol to select sample date through temperature 
 
 ```
 ### Mutate
@@ -159,6 +160,7 @@ Mutating allows us to add new columns that are functions of existing columns. Op
 ```{r}
 
 NTL.phys.data.temps <- mutate(NTL.phys.data.temps, temperature_F = (temperature_C*9/5) + 32)
+#this allows you to add a new column with temperature in fahrenheit, the existing temp column is in C
 
 ```
 
@@ -171,11 +173,14 @@ A package that makes coercing date much easier is `lubridate`. A guide to the pa
 NTL.phys.data.PeterPaul1 <- mutate(NTL.phys.data.PeterPaul1, month = month(sampledate)) 
 
 # reorder columns to put month with the rest of the date variables
-NTL.phys.data.PeterPaul1 <- select(NTL.phys.data.PeterPaul1, lakeid:daynum, month, sampledate:comments)
+NTL.phys.data.PeterPaul1 <- select(NTL.phys.data.PeterPaul1, lakeid:daynum, month, sampledate:comments) 
+#this structure is saying pull lake id through (:)daynum, put month there, then pull sample date through : comments. This is allowing you to move the new month column you just created from the very end of the dataset to next to sample date, where it makes more sense to have the month column
 
 # find out the start and end dates of the dataset
 interval(NTL.phys.data.PeterPaul1$sampledate[1], NTL.phys.data.PeterPaul1$sampledate[21613])
 interval(first(NTL.phys.data.PeterPaul1$sampledate), last(NTL.phys.data.PeterPaul1$sampledate))
+#two different ways to find first and last dates of the dataset, the second one is a dplyr function
+
 ```
 
 
