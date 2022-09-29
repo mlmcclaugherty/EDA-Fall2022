@@ -26,9 +26,10 @@ The completed exercise is due on Sept 30th.
 
 ```{r,  message = FALSE}
 getwd()
-library(tidyverse)
+#library(tidyverse)
 Neonics<-read.csv("/home/guest/EDA-Fall2022/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv", stringsAsFactors = TRUE)
 Litter<-read.csv("/home/guest/EDA-Fall2022/Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
 
 
 ```
@@ -54,92 +55,112 @@ Litter<-read.csv("/home/guest/EDA-Fall2022/Data/Raw/NEON_NIWO_Litter_massdata_20
 
 5.  What are the dimensions of the dataset?
 
-```{r}
-
+```{r} 
+dim(Neonics)
 ```
 
 6.  Using the `summary` function on the "Effect" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 
 ```{r}
+summary(Neonics$Effect)
 
 ```
 
-> Answer:
+> Answer: These effects are of interest because it is useful to see how the insects responsed to exposure to the chemicals and to see how many experienced each type of effect.
 
 7.  Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.
 
 ```{r}
+summary(Neonics$Species.Common.Name)
 
 ```
 
-> Answer:
+> Answer: The six most commonly used species were Honey Bees, Parasitic Wasps, Buff Tailed BumbleBee, Carniolan Honey Bees, Bumble Bees, and Italian Honey Bees. Many of these species are pollinators that provide valuable agricultural services for humans. If we use insecticides to target crop pests, we would want to understand the impacts on these pollinator species. Parasitic wasps target species that may be considered agricultural pests, so similarly we would want to understand how insecticides affect these species. 
 
 8.  Concentrations are always a numeric value. What is the class of Conc.1..Author. in the dataset, and why is it not numeric?
 
 ```{r}
+class(Neonics$Conc.1..Author.)
 
 ```
 
-> Answer:
+> Answer: Conc.1..Author is a factor. They represent different categories of concentrations because these concentrations depend on several other factors, like the chemical type and concentration type, so they aren't universal concentrations.
 
 ## Explore your data graphically (Neonics)
 
 9.  Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year.
 
 ```{r}
-
+ggplot(Neonics)+
+  geom_freqpoly(aes(x = Publication.Year), bins=50)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 
 ```{r}
-
+ggplot(Neonics)+
+  geom_freqpoly(aes(x=Publication.Year, color=Test.Location), bins=25)
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer:
+> Answer: The Lab and Field Natural are the most common test locations. This changes slightly over time. From the early 1990s into 2000, Field Natural was slightly more common but from that time forward, Lab test locations were relatively as common until about 2010 when Lab tests far exceeded all other test locations.
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information.
 
 ```{r}
 
+ggplot(Neonics)+
+  geom_bar(aes(x=Endpoint))+
+   scale_x_discrete(guide = guide_axis(n.dodge=2))
 ```
 
-> Answer:
+> Answer: The two most common endpoints are LOEL (Lowest Observable Effects Level), or the lowest concentration 
+producing effects that were significantly different from the controls, and the NOEL (No Observable Effect Level), the highest concentration that produced effects that were not significantly different than those observed in controls.
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
 ```{r}
+class(Litter$collectDate)
 
+Litter$collectDate <- as.Date(Litter$collectDate, format = "%m/%d/%y")
+class(Litter$collectDate)
+unique(Litter$collectDate)
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r}
-
+unique(Litter$plotID)
 ```
 
-> Answer:
+> Answer: 12 plots were sampled at Niwot Ridge. Unique only returns a list of values that don't have duplicates based on your selection criteria. Summary will give a count of how many entries there are for each of your selections.
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
 ```{r}
-
+ggplot(Litter)+
+  geom_bar(aes(x=functionalGroup))
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r}
+ggplot(Litter)+
+  geom_boxplot(aes(x=functionalGroup, y=dryMass))
+
+ggplot(Litter)+
+  geom_violin(aes(x=functionalGroup, y=dryMass))
+
 
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer:
+> Answer: In this case the boxplot is a more effective visualization option because without further manipulation, the violin plot is too compressed to reveal anything about the data. 
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
-> Answer:
+> Answer: Needles, mixed, and twigs/branches have the highest biomass at these sites.
