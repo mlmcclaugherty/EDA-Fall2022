@@ -125,7 +125,10 @@ producing effects that were significantly different from the controls, and the N
 ```{r}
 class(Litter$collectDate)
 
-Litter$collectDate <- as.Date(Litter$collectDate, format = "%m/%d/%y")
+library(lubridate)
+
+
+Litter$collectDate<- as.Date(Litter$collectDate, format= "%Y-%m-%d")
 class(Litter$collectDate)
 unique(Litter$collectDate)
 ```
@@ -134,6 +137,7 @@ unique(Litter$collectDate)
 
 ```{r}
 unique(Litter$plotID)
+summary(Litter$plotID)
 ```
 
 > Answer: 12 plots were sampled at Niwot Ridge. Unique only returns a list of values that don't have duplicates based on your selection criteria. Summary will give a count of how many entries there are for each of your selections.
