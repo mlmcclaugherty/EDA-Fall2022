@@ -98,7 +98,7 @@ print(O3plot)
 O3plot2 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone, color = "blue"))
 print(O3plot2)
-#we specified color=blue, but a blue plot is not generated--why? when you specify color inside the aesthetics, it thinks your adding another layer to the plot, not changing the color.
+#we specified color=blue, but a blue plot is not generated--why? when you specify color inside the aesthetics, it thinks your adding another layer to the plot, not changing the color. Color should be outside the aesthetics argument.
 
 O3plot2 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone), color = "blue")
