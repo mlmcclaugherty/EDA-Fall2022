@@ -157,6 +157,7 @@ dim(EPAairO3_PM25_18_19)
 #saving wrangled dataset
 EPAair_O3_PM25_NC1718_Processed <-EPAairO3_PM25_18_19
 write.csv(EPAair_O3_PM25_NC1718_Processed, row.names = FALSE, file = "/home/guest/EDA-Fall2022/Data/Processed/EPAair_O3_PM25_NC1718_Processed.csv")
+EPAair_O3_PM25_NC1718_Processed
 
 ```
 
