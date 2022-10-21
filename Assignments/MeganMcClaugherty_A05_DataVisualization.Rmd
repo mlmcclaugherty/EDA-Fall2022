@@ -13,7 +13,7 @@ editor_options:
 
 #install.packages('formatR')
 library(formatR)
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE)
 ```
 
 ## OVERVIEW
@@ -43,14 +43,20 @@ the processed data file for the Niwot Ridge litter dataset (use the
 
 ```{r}
 #1 Getting working directory, loading necessary packages and datasets
+
 getwd()
+
 library(tidyverse)
 library(lubridate)
 library(cowplot)
+library(RColorBrewer)
+
 LakeChemNutrient<-read.csv("/home/guest/EDA-Fall2022/Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
+
 LitterMassTrap<-read.csv("/home/guest/EDA-Fall2022/Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
 
 #2 Formatting date
+
 LakeChemNutrient$sampledate<-as.Date(LakeChemNutrient$sampledate, format = "%Y-%m-%d")
 LitterMassTrap$collectDate<-as.Date(LitterMassTrap$collectDate, format = "%Y-%m-%d")
 
@@ -60,8 +66,10 @@ LitterMassTrap$collectDate<-as.Date(LitterMassTrap$collectDate, format = "%Y-%m-
 
 ```{r}
 #3 Building a theme and setting it as default theme to be applied across all plots
+
 A5theme<-theme_light(base_size = 12)+
   theme(axis.text = element_text(color = "black"),
+        axis.title.x = element_text(color = "black"),
   legend.position = "bottom")
 
 theme_set(A5theme)
@@ -80,12 +88,15 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4 Using a scatterplot with a trend line to visualize the relationship between total phosphorus and phosphate concentrations, using different colors for the two lakes. Adjusted y-axis to remove an outlier.
-A5Q4plot<-ggplot(LakeChemNutrient, aes(x=tp_ug, y=po4, color=lakename))+
+PhosphatePhosphorus<-ggplot(LakeChemNutrient, aes(x=tp_ug, y=po4, color=lakename))+
   geom_point()+
   geom_smooth(method = lm, color="black")+
   ylim(0,45)+
-  xlim(0,150)
-print(A5Q4plot)
+  xlim(0,150)+
+  xlab("Total Phosphorus Concentration (ug/L)")+
+  ylab("Phosphate (ug/L)")
+
+print(PhosphatePhosphorus)
 ```
 
 
@@ -99,22 +110,38 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 
 ```{r}
 #5 Creating separate boxplots for temperature, total phosphorus, and total nitrogen by month for each lake.
-LakeTempbyMonth<-ggplot(LakeChemNutrient, aes(x= as.factor(month), y=temperature_C, color = lakename))+
-  geom_boxplot()+
-  xlab("Month")
-print(A5Q5Temp)
-LakeTPbyMonth<-ggplot(LakeChemNutrient, aes(x= as.factor(month), y=tp_ug, color = lakename))+
-  geom_boxplot()+
-  xlab("Month")
-print(A5Q5TP)
-LakeTNbyMonth<-ggplot(LakeChemNutrient, aes(x = as.factor(month), y=tn_ug, color = lakename))+
-  geom_boxplot()+
-  xlab("Month")
-print(A5Q5TN)
 
+LakeTempbyMonth<-ggplot(LakeChemNutrient, aes(x= factor(month, levels = c(1:12)), y=temperature_C, color = lakename))+
+  geom_boxplot()+
+  xlab("Month")+
+  ylab("Temperature (C)")+
+  scale_x_discrete(drop = FALSE)+
+scale_color_brewer(palette = "Set1")
+print(LakeTempbyMonth)
 
-LakeTempTPTNbyMonth<-plot_grid(LakeTempbyMonth, LakeTPbyMonth, LakeTNbyMonth, nrow = 3, align = 'h', rel_heights = c(3, 3, 3))
-print((LakeTempTPTNbyMonth))
+LakeTPbyMonth<-ggplot(LakeChemNutrient, aes(x= factor(month, c(1:12)), y = tp_ug, color = lakename))+
+  geom_boxplot()+
+  xlab("Month")+
+  ylab("Total Phosphorus Concentration (ug/L)")+
+  scale_color_brewer(palette = "Set1")+
+  scale_x_discrete(drop = FALSE)
+
+print(LakeTPbyMonth)
+
+LakeTNbyMonth<-ggplot(LakeChemNutrient, aes(x = factor(month, c(1:12)), y=tn_ug, color = lakename))+
+  geom_boxplot()+
+  xlab("Month")+
+  ylab("Total Nitrogen Concentration (ug/L)")+
+  scale_color_brewer(palette = "Set1")+
+  scale_x_discrete(drop = FALSE)
+
+print(LakeTNbyMonth)
+
+#cow plot to combine all three graphs into one output
+
+LakeTempTPTNbyMonth <- plot_grid(LakeTempbyMonth + theme (legend.position = "none"), LakeTNbyMonth + theme (legend.position = "none"), LakeTPbyMonth + theme (legend.position = "bottom"), nrow = 3,  align = "v", rel_heights = c(2,2,2))
+
+print(LakeTempTPTNbyMonth)
 
 ```
 
@@ -133,18 +160,23 @@ three facets rather than separated by color.
 
 ```{r}
 #6 
-A5Q6needlemass<-ggplot(subset(LitterMassTrap, functionalGroup == "Needles"),
-                       aes(x = collectDate, y = dryMass, color = nlcdClass))+
-                         geom_point()
-print(A5Q6needlemass)
+NeedleMass<-ggplot(subset(LitterMassTrap, functionalGroup == "Needles"),
+                 aes(x = collectDate, y = dryMass, color = nlcdClass))+
+                 xlab("Collect Date")+
+                 ylab("Dry Mass (g)")+
+                 geom_point()
+
+print(NeedleMass)
 
 
 #7
-A5Q7<-ggplot(subset(LitterMassTrap, functionalGroup == "Needles"), 
+NeedleMassFacet<-ggplot(subset(LitterMassTrap, functionalGroup == "Needles"), 
              aes(x = collectDate, y = dryMass)) +
+             xlab("Collect Date")+
+             ylab("Dry Mass (g)")+
              geom_point() +
              facet_wrap(vars(nlcdClass), nrow = 3)
-print(A5Q7)
+print(NeedleMassFacet)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
