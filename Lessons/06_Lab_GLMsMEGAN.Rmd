@@ -71,13 +71,16 @@ For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 ```{r}
 
 #Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
-Ex2Regression<-lm(data=EPAair, PM2.5~Ozone)
+Ex2Regression<-lm(data=EPAair, PM2.5 ~ Ozone)
 summary(Ex2Regression)
+#p-value: very low so reject the null that there's no relationship between PM2.5 and Ozone. Rsquared: 13% of the variation is explained by this model.
 
 #Exercise 3: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
-Ex3<-ggplot(EPAair, aes(x = PM2.5, y = Ozone))+
-  geom_smooth(method="lm")+
-  geom_point()
+
+Ex3<-ggplot(EPAair, aes(x = Ozone, y = PM2.5))+
+  geom_point()+
+   geom_smooth(method="lm")+  #shows the line with standard error
+  
 print(Ex3)
 
 
@@ -91,16 +94,35 @@ What other variables can we add to improve model?
 ```{r}
 
 #Exercise 4: Build correlation plots and identify more possible explanatory variables to add to the regression.
+library(corrplot)
+PeterPaulnutrients <- 
+  PeterPaul.chem.nutrients %>%
+  select(tn_ug:po4) %>%
+  na.omit()
+PeterPaulCorr <- cor(PeterPaulnutrients) #creates correlation matrix)
+corrplot(PeterPaulCorr, method = "ellipse")
 
-
-
+EPAairOzoneandPM2.5<-
+  EPAair %>% 
+  select(meanLatitude:Ozone) %>% #you could also do this by creating a dataframe that is a subset of just meanLatitude:Ozone
+  na.omit()
+EPAairOzoneandPM2.5corr<-cor(EPAairOzoneandPM2.5)
+corrplot(EPAairOzoneandPM2.5corr, method = "ellipse")
+corrplot.mixed(EPAairOzoneandPM2.5corr, upper = "ellipse") #another way to visualize the corr plo
 
 #Exercise 5: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 5?
 
 
 
+EPAOzoneAIC<-lm(data=EPAairOzoneandPM2.5, PM2.5 ~ Ozone + meanLatitude + meanLongitude + Month + Year)  #since we only have six variables, we can include them all in the AIC, however, if we had more variables we would want to make informed choices from the correlation plot and select only those variables with a strong relationship.
 
-#Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 5. 
+step(EPAOzoneAIC)
+#two iterations. In the first, it's saying by removing year, the AIC will be lower, which improves the model.
+
+#Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 2. 
+
+OzoneBest<-lm(data = EPAairOzoneandPM2.5, PM2.5 ~ Ozone + meanLatitude + meanLongitude + Month)
+summary(OzoneBest)
 
 ```
 
@@ -116,13 +138,13 @@ Litter.Totals <- Litter %>%
 
 # Format ANOVA as aov
 Litter.Totals.anova <- aov(data = Litter.Totals, dryMass ~ plotID)
-summary(Litter.Totals.anova)
+summary(Litter.Totals.anova)   #result was that the means are not the same, so run post-hoc test.
 
 # Extract groupings for pairwise relationships
 Litter.Totals.groups <- HSD.test(Litter.Totals.anova, "plotID", group = TRUE)
 Litter.Totals.groups$groups
 
-Litter.Totals <- Litter %>%
+Litter.Totals <- Litter.Totals %>%
   mutate( treatgroups = Litter.Totals.groups$groups[plotID,2])
 
 # Graph the results
@@ -140,4 +162,8 @@ print(Litter.Totals.plot)
 
 ```{r}
 #Exercise 7: Improve the plot```
+arrange(Litter.Totals, treatgroups)
 
+
+
+print(Litter.Totals.plot)
