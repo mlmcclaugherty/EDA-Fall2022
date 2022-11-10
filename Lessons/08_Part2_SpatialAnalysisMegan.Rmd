@@ -372,6 +372,7 @@ myMap
 
 #Select intersecting counties using matrix subsetting
 neuse_intersect_1 <- counties_sf_utm[neuse_sf,]
+#counties are the dough, the neuse is the cookie cutter (subset counties based on the neuse huc)
 
 #Select intersecting counties using the `filter()` command
 neuse_intersect_2 <- counties_sf_utm %>% 
@@ -380,7 +381,7 @@ neuse_intersect_2 <- counties_sf_utm %>%
 #View the result (spatial overlay of the intersecting counties and the NRBasin)
 myMap + mapview(neuse_intersect_2, alpha.regions = 0)
 
-#Actually intersect the counties (not just select those that intersect); chop off the parts of the counties that are outside of the Neuse River Basin (cookie cutter)
+#Actually intersect the counties (not just select those that intersect); chop off the parts of the counties that are outside of the Neuse River Basin (cookie cutter)--this is actually modifying the data
 neuse_counties_sf <- neuse_sf %>% 
   st_intersection(counties_sf_utm)
 myMap + mapview(neuse_counties_sf, alpha.regions = 0)
